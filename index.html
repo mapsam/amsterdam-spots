@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.39.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.39.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+        .mapboxgl-popup-content {
+          border-radius: 0;
+          padding: 0;
+        }
+        .mapboxgl-popup-tip {
+          display: none;
+        }
+
+        .ams-popup {
+          border-top-width: 5px;
+          border-top-style: solid;
+          border-top-color: #d9d838;
+        }
+        .bar { border-top-color: #4264fb; }
+        .cafe { border-top-color: #f8c8da }
+        .lodging { border-top-color: #b43b71 }
+        .music { border-top-color: #000000 }
+        .park { border-top-color: #33c377 }
+        .restaurant { border-top-color: #4264fb }
+        .work { border-top-color: #f74e4e }
+        .theatre { border-top-color: #333333 }
+
+        .ams-popup-content h3 {
+          margin: 0 0 1em 0;
+        }
+
+        .ams-popup-content a {
+          display: block;
+          margin-top: 1em;
+          color: #aab7ef;
+        }
+
+        .ams-popup-content {
+          line-height: 1.35em;
+          width: 200px;
+          padding: 12px;
+        }
+
+        .ams-popup-address {
+          color: #666;
+          letter-spacing: 0.05em;
+          font-size: 0.9em;
+          line-height: 1em;
+        }
+    </style>
+</head>
+<body>
+
+<div id='map'></div>
+<script>
+
+mapboxgl.accessToken = 'pk.eyJ1IjoibWFwc2FtIiwiYSI6ImNpaWR1MXlxcDAxMTJ1M2tzYWUyeTdpY24ifQ.QG1jCTgj-WYwJa2y1W0wMw';
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapsam/cj6zay7wd2faw2rpolqcoyukt',
+    center: [4.896, 52.369],
+    zoom: 13
+});
+
+map.on('load', function () {
+
+  map.on('click', 'amsterdam-spots', function (e) {
+    new mapboxgl.Popup({
+      anchor: 'top-left',
+      offset: {
+        'top-left': [15, -7]
+      }
+    })
+      .setLngLat(e.features[0].geometry.coordinates)
+      .setHTML(buildPopup(e.features[0].properties))
+      .addTo(map);
+  });
+});
+
+function buildPopup(spot) {
+  var html = `<div class='ams-popup ${spot.type}'>
+    <div class='ams-popup-content'>`;
+
+  if (spot.title) {
+    html+= `<h3>${spot.title}</h3>`;
+  }
+
+  if (spot.description) {
+    html+= `<p>${spot.description}<p>`;
+  }
+
+  if (spot.address) {
+    html+= `<span class='ams-popup-address'><strong>Address:</strong><br>${spot.address}</span>`;
+  }
+
+  if (spot.link) {
+    html+= `<br><a target='_blank' href='${spot.link}'>website</a>`;
+  }
+
+  return html+='</div></div>';
+
+}
+</script>
+
+</body>
+</html>
